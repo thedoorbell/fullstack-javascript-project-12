@@ -1,0 +1,25 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Realtime messenger",
+  "homepage": "https://github.com/thedoorbell/fullstack-javascript-project-12#readme",
+  "bugs": {
+    "url": "https://github.com/thedoorbell/fullstack-javascript-project-12/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thedoorbell/fullstack-javascript-project-12.git"
+  },
+  "license": "ISC",
+  "author": "German Mizkhatov",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build --prefix frontend",
+    "start": "start-server -s ./frontend/dist"
+  },
+  "dependencies": {
+    "@hexlet/chat-server": "^2.0.4"
+  }
+}

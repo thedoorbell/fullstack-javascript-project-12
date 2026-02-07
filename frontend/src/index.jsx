@@ -1,10 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { Provider } from 'react-redux'
+import './scss/styles.scss'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+import init from './init'
+import store from './slices/index.js'
+
+const app = async () => {
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <Provider store={store}>
+        {await init()}
+      </Provider>
+    </StrictMode>
+  )
+}
+
+app()

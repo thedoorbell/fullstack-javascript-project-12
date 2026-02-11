@@ -7,24 +7,41 @@ import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SignupPage from './pages/SignupPage'
+import SpinnerComponent from './components/Spinner.jsx'
 import { logOut, authInit } from './slices/authSlice.js'
 
 const PrivateRoute = ({ children }) => {
-  const loggedIn = useSelector(state => state.auth.loggedIn)
+  const { loggedIn, loading } = useSelector(state => state.auth)
   const location = useLocation()
 
-  return (
-    loggedIn === true ? children : <Navigate to="/login" state={{ from: location }} />
-  )
+  if (loading) {
+    return <SpinnerComponent />
+  }
+
+  return loggedIn ? children : <Navigate to="/login" state={{ from: location }} />
+}
+
+const PublicRoute = ({ children }) => {
+  const { loggedIn, loading } = useSelector(state => state.auth)
+
+  if (loading) {
+    return <SpinnerComponent />
+  }
+
+  return loggedIn ? <Navigate to="/" /> : children
 }
 
 function App() {
   const dispatch = useDispatch()
-  const loggedIn = useSelector(state => state.auth.loggedIn)
+  const { loggedIn, loading } = useSelector(state => state.auth)
 
   useEffect(() => {
     dispatch(authInit())
   }, [dispatch])
+
+  if (loading) {
+    return <SpinnerComponent />
+  }
   
   return (
     <div className='d-flex flex-column h-100'>
@@ -32,20 +49,35 @@ function App() {
         <Navbar bg="light" variant="light" expand="lg" className="shadow-sm">
           <Container>
             <Navbar.Brand as={Link} to="/">Messenger</Navbar.Brand>
-            {loggedIn === true && <Button variant="primary" onClick={() => dispatch(logOut())}>Выйти</Button>}
+            {loggedIn &&
+              <Button variant="primary" onClick={() => dispatch(logOut())}>Выйти</Button>}
           </Container>
         </Navbar>
         <Routes>
           <Route
             path="/"
-            element={(
+            element={
               <PrivateRoute>
                 <ChatPage />
               </PrivateRoute>
-            )}
+            }
           />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignupPage />} />
+          <Route
+            path="login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route 
+            path="signup" 
+            element={
+              <PublicRoute>
+                <SignupPage />
+              </PublicRoute>
+            } 
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

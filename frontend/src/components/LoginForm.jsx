@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useFormik } from 'formik'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import * as Yup from 'yup'
-import axios from 'axios'
 
 import { setCredentials } from '../slices/authSlice.js'
-import api from '../routes.js'
+import { useLogInMutation } from '../services/authApi.js'
 
 const LoginForm = () => {
   const loginSchema = Yup.object().shape({
@@ -17,9 +16,9 @@ const LoginForm = () => {
         .required('Обязательное поле'),
   })
   
-  const [authFailed, setAuthFailed] = useState(false)
-  const dispatch = useDispatch()
+  const [logIn, { isLoading, isError }] = useLogInMutation()
   const inputRef = useRef()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -33,17 +32,14 @@ const LoginForm = () => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      setAuthFailed(false)
-
       try {
-        const response = await axios.post(api.loginPath(), values)
-        dispatch(setCredentials(response.data))
+        const data = await logIn(values).unwrap()
+        dispatch(setCredentials(data))
         navigate('/', { replace: true })
       }
       catch (error) {
         formik.setSubmitting(false)
-        if (error.isAxiosError && error.response.status === 401) {
-          setAuthFailed(true)
+        if (error.status === 401) {
           inputRef.current.select()
           return
         }
@@ -54,7 +50,7 @@ const LoginForm = () => {
 
   return (
     <Row className="justify-content-center align-content-center h-100">
-      <Col className='col-12' sm={8} md={6} lg={4} xxl={3}>
+      <Col xs={12} sm={8} md={6} lg={4} xxl={3}>
         <Card className="shadow-sm">
           <Card.Body className="row p-5">
             <h1 className="text-center mb-4">Войти</h1>
@@ -68,7 +64,7 @@ const LoginForm = () => {
                     name="username"
                     id="username"
                     autoComplete="username"
-                    isInvalid={authFailed}
+                    isInvalid={isError}
                     required
                     ref={inputRef}
                   />
@@ -83,13 +79,23 @@ const LoginForm = () => {
                     name="password"
                     id="password"
                     autoComplete="current-password"
-                    isInvalid={authFailed}
+                    isInvalid={isError}
                     required
                   />
                   <Form.Label htmlFor="password">Пароль</Form.Label>
-                  <Form.Control.Feedback type="invalid" tooltip>Неверные имя пользователя или пароль</Form.Control.Feedback>
+                  <Form.Control.Feedback
+                    type="invalid"
+                    tooltip
+                  >Неверные имя пользователя или пароль
+                  </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" variant="outline-primary" className="w-100 mb-3">Войти</Button>
+                <Button
+                  type="submit"
+                  variant="outline-primary"
+                  className="w-100 mb-3"
+                  disabled={isLoading}
+                >Войти
+                </Button>
               </fieldset>
             </Form>
           </Card.Body>

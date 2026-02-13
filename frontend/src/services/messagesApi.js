@@ -22,8 +22,19 @@ export const messagesApi = createApi({
         url: '/messages',
       }),
       providesTags: ['Messages'],
+    }),
+    addNewMessage: builder.mutation({
+      query: message => ({
+        url: '/messages',
+        method: 'POST',
+        body: message,
+      }),
+      invalidatesTags: ['Messages'],
     })
   }),
 })
 
-export const { useGetMessagesQuery } = messagesApi
+export const {
+  useGetMessagesQuery,
+  useAddNewMessageMutation
+} = messagesApi

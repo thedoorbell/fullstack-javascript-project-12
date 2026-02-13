@@ -22,6 +22,13 @@ export const authApi = createApi({
         method: 'POST',
         body: user,
       })
+    }),
+    signUp: builder.mutation({
+      query: user => ({
+        url: '/signup',
+        method: 'POST',
+        body: user,
+      })
     })
   }),
 })

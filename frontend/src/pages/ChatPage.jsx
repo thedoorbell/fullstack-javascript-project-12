@@ -1,23 +1,52 @@
-import { Button, Card, Col, Form, Row, Container, Nav, InputGroup } from 'react-bootstrap'
+import { Button, Col, Form, Row, Container, Nav, InputGroup } from 'react-bootstrap'
 import { PlusSquare, ArrowRightSquare } from 'react-bootstrap-icons'
-import { useRef, useEffect, act } from 'react'
+import { useRef, useEffect, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 
+import { SocketContext } from '../contexts/SocketContext'
 import { useGetChannelsQuery } from '../services/channelsApi'
-import { useGetMessagesQuery } from '../services/messagesApi'
+import { useGetMessagesQuery, useAddNewMessageMutation, messagesApi } from '../services/messagesApi'
 import { addChannels, channelsSelectors, setActiveChannel } from '../slices/channelsSlice'
 import { addMessages, messagesSelectors } from '../slices/messagesSlice'
+import SpinnerComponent from '../components/Spinner'
 
 const ChatPage = () => {
-  const { data: loadedChannels } = useGetChannelsQuery()
-  const { data: loadedMessages } = useGetMessagesQuery()
   const inputRef = useRef()
   const dispatch = useDispatch()
+  const socket = useContext(SocketContext)
+
+  const { data: loadedChannels, isLoading } = useGetChannelsQuery()
+  const { data: loadedMessages } = useGetMessagesQuery()
+  const [addNewMessage] = useAddNewMessageMutation()
+
+  const { activeChannel } = useSelector(state => state.channels)
+  const { username } = useSelector(state => state.auth)
+  const channels = useSelector(channelsSelectors.selectAll)
+  const messages = useSelector(messagesSelectors.selectAll)
+
+  const filteredMessages = messages.filter(message => message.channelId === activeChannel.id)
 
   useEffect(() => {
+    if (!isLoading && inputRef.current) {
       inputRef.current.focus()
+    }
+  }, [activeChannel, isLoading])
+
+  useEffect(() => {
+    socket.on('newMessage', (payload) => {
+      dispatch(
+        messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {
+          draftMessages.push(payload)
+        })
+      )
     })
+
+    return () => {
+      socket.off('newMessage')
+    }
+  }, [dispatch, socket])
+
   useEffect(() => {
     if (loadedChannels && loadedMessages) {
       try {
@@ -30,25 +59,36 @@ const ChatPage = () => {
     }
   }, [dispatch, loadedChannels, loadedMessages])
 
-  const channels = useSelector(channelsSelectors.selectAll)
-  const messages = useSelector(messagesSelectors.selectAll)
-
   useEffect(() => {
-    if (channels.length > 0) {
+    if (channels.length > 0 && !activeChannel) {
       dispatch(setActiveChannel(channels[0]))
     }
-  }, [channels, dispatch])
-
-  const { activeChannel } = useSelector(state => state.channels)
+  }, [channels, dispatch, activeChannel])
 
   const formik = useFormik({
     initialValues: {
       body: '',
+      channelId: '',
+      username,
     },
     onSubmit: async (values) => {
-      console.log(values)
+      try {
+        values.channelId = activeChannel.id
+        await addNewMessage(values)
+        values.body = ''
+        inputRef.current.focus()
+      }
+      catch (error) {
+        formik.setSubmitting(false)
+        console.log(error)
+        throw error
+      }
     }
   })
+
+  if (isLoading) {
+    return <SpinnerComponent />
+  }
   
   return (
     <Container className='h-100 my-4 overflow-hidden rounded shadow'>
@@ -91,12 +131,14 @@ const ChatPage = () => {
           <div className='d-flex flex-column h-100'>
             <div className="bg-light mb-4 p-3 shadow-sm small">
               <p className="m-0"><b># {activeChannel.name}</b></p>
-              <span className="text-muted">{messages ? messages.length : 0} сообщений</span>
+              <span className="text-muted">
+                {filteredMessages ? filteredMessages.length : 0} сообщений
+              </span>
             </div>
             <div id="messages-box" className="chat-messages overflow-auto px-5">
-              {messages?.map(message => (
+              {filteredMessages?.map(message => (
                 <div className="text-break mb-2" key={message.id}>
-                    <b>{message.username}</b>: {message.text}
+                    <b>{message.username}</b>: {message.body}
                 </div>
               ))}
             </div>

@@ -7,10 +7,12 @@ import init from './init'
 import store from './slices/index.js'
 
 const app = async () => {
+  const token = localStorage.getItem('token')
+  
   createRoot(document.getElementById('root')).render(
     <StrictMode>
       <Provider store={store}>
-        {await init()}
+        {await init(token)}
       </Provider>
     </StrictMode>
   )

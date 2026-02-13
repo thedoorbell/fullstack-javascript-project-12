@@ -1,7 +1,11 @@
 import { io } from 'socket.io-client'
 
+const url = window.location.hostname !== 'localhost' 
+    ? window.location.host 
+    : 'localhost:5002'
+
 export const createSocket = (token) => {
-  return io('http://localhost:5002', {
+  return io(url, {
     path: '/socket.io',
     transports: ['websocket', 'polling'],
     reconnection: true,

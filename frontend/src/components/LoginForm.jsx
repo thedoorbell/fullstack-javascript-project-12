@@ -8,8 +8,7 @@ import { setCredentials } from '../slices/authSlice.js'
 import { useLogInMutation } from '../services/authApi.js'
 
 const LoginForm = () => {
-  
-  const [logIn, { isError }] = useLogInMutation()
+  const [logIn, {isError }] = useLogInMutation()
   const inputRef = useRef()
   const dispatch = useDispatch()
   const navigate = useNavigate()

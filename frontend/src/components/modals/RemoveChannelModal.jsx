@@ -1,24 +1,15 @@
 import { Modal, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { useGetChannelsQuery, useRemoveChannelMutation } from '../../services/channelsApi'
-import { setActiveChannelId } from '../../slices/uiSlice'
+import { useRemoveChannelMutation } from '../../services/channelsApi'
 
 const RemoveChannelModal = (props) => {
   const { onHide, modalInfo } = props
   const { item: id } = modalInfo
-  const dispatch = useDispatch()
   const [removeChannel, { isLoading }] = useRemoveChannelMutation()
-  const { data: channels } = useGetChannelsQuery()
-  const { activeChannelId } = useSelector(state => state.ui)
 
   const onRemove = async () => {
     try {
-      const response = await removeChannel(id).unwrap()
-      const { id: deletedId } = response
+      await removeChannel(id)
       onHide()
-      if (deletedId === activeChannelId) {
-        dispatch(setActiveChannelId(channels[0].id))
-      }
     }
     catch (error) {
       console.log(error)

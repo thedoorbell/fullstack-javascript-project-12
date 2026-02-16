@@ -84,6 +84,10 @@ const ChatPage = () => {
           return draftChannels.filter(channel => channel.id !== payload.id)
         })
       )
+
+      if (payload.id === activeChannelId) {
+        dispatch(setActiveChannelId(channels[0].id))
+      }
     })
     socket.on('renameChannel', (payload) => {
       dispatch(
@@ -99,7 +103,7 @@ const ChatPage = () => {
       socket.off('newChannel')
       socket.off('removeChannel')
     }
-  }, [dispatch, socket])
+  }, [dispatch, socket, channels, activeChannelId])
 
   useEffect(() => {
     if (channels?.length > 0 && !activeChannelId) {
@@ -185,7 +189,7 @@ const ChatPage = () => {
         <Col className='p-0 h-100'>
           <div className='d-flex flex-column h-100'>
             <div className="bg-light mb-4 p-3 shadow-sm small">
-              <p className="m-0"><b># {channels.find(c => c.id === activeChannelId)?.name}</b></p>
+              <p className="m-0"><b># {channels?.find(c => c.id === activeChannelId)?.name}</b></p>
               <span className="text-muted">
                 {filteredMessages ? filteredMessages.length : 0} сообщений
               </span>

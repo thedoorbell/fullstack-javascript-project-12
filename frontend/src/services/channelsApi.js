@@ -15,15 +15,43 @@ const baseQuery = fetchBaseQuery({
 export const channelsApi = createApi({
   reducerPath: 'channelsApi',
   baseQuery,
-  tagTypes: ['Channel'],
+  tagTypes: ['Channels'],
   endpoints: builder => ({
     getChannels: builder.query({
       query: () => ({
         url: '/channels',
       }),
-      providesTags: ['Channel'],
+      providesTags: ['Channels'],
+    }),
+    addNewChannel: builder.mutation({
+      query: channel => ({
+        url: '/channels',
+        method: 'POST',
+        body: channel,
+      }),
+      invalidatesTags: ['Channels'],
+    }),
+    removeChannel: builder.mutation({
+      query: id => ({
+        url: `/channels/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Channels'],
+    }),
+    renameChannel: builder.mutation({
+      query: ({ id, name }) => ({
+        url: `/channels/${id}`,
+        method: 'PATCH',
+        body: { name },
+      }),
+      invalidatesTags: ['Channels'],
     })
   }),
 })
 
-export const { useGetChannelsQuery } = channelsApi
+export const {
+  useGetChannelsQuery,
+  useAddNewChannelMutation,
+  useRemoveChannelMutation,
+  useRenameChannelMutation,
+} = channelsApi

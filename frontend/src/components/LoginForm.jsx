@@ -3,18 +3,11 @@ import { useFormik } from 'formik'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import * as Yup from 'yup'
 
 import { setCredentials } from '../slices/authSlice.js'
 import { useLogInMutation } from '../services/authApi.js'
 
 const LoginForm = () => {
-  const loginSchema = Yup.object().shape({
-      username: Yup.string()
-        .required('Обязательное поле'),
-      password: Yup.string()
-        .required('Обязательное поле'),
-  })
   
   const [logIn, { isLoading, isError }] = useLogInMutation()
   const inputRef = useRef()
@@ -30,7 +23,6 @@ const LoginForm = () => {
       username: '',
       password: '',
     },
-    validationSchema: loginSchema,
     onSubmit: async (values) => {
       try {
         const data = await logIn(values).unwrap()
@@ -86,7 +78,8 @@ const LoginForm = () => {
                   <Form.Control.Feedback
                     type="invalid"
                     tooltip
-                  >Неверные имя пользователя или пароль
+                  >
+                    Неверные имя пользователя или пароль
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Button
@@ -94,7 +87,8 @@ const LoginForm = () => {
                   variant="outline-primary"
                   className="w-100 mb-3"
                   disabled={isLoading}
-                >Войти
+                >
+                  Войти
                 </Button>
               </fieldset>
             </Form>

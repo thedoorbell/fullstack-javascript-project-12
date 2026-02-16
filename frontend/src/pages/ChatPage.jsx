@@ -1,37 +1,48 @@
-import { Button, Col, Form, Row, Container, Nav, InputGroup } from 'react-bootstrap'
+import { Button, Col, Form, Row, Container, Nav, InputGroup, ButtonGroup, Dropdown } from 'react-bootstrap'
 import { PlusSquare, ArrowRightSquare } from 'react-bootstrap-icons'
-import { useRef, useEffect, useContext } from 'react'
+import { useRef, useEffect, useContext, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 
 import { SocketContext } from '../contexts/SocketContext'
-import { useGetChannelsQuery } from '../services/channelsApi'
+import { useGetChannelsQuery, channelsApi } from '../services/channelsApi'
 import { useGetMessagesQuery, useAddNewMessageMutation, messagesApi } from '../services/messagesApi'
-import { addChannels, channelsSelectors, setActiveChannel } from '../slices/channelsSlice'
-import { addMessages, messagesSelectors } from '../slices/messagesSlice'
+import { setActiveChannelId } from '../slices/uiSlice.js'
 import SpinnerComponent from '../components/Spinner'
+import getModal from '../components/modals/index.js'
+
+const renderModal = ({ modalInfo, hideModal }) => {
+  if (!modalInfo.type) {
+    return null
+  }
+
+  const Modal = getModal(modalInfo.type)
+  return <Modal modalInfo={modalInfo} onHide={hideModal} />
+}
 
 const ChatPage = () => {
   const inputRef = useRef()
   const dispatch = useDispatch()
   const socket = useContext(SocketContext)
 
-  const { data: loadedChannels, isLoading } = useGetChannelsQuery()
-  const { data: loadedMessages } = useGetMessagesQuery()
-  const [addNewMessage] = useAddNewMessageMutation()
+  const [modalInfo, setModalInfo] = useState({ type: null, item: null })
+  const hideModal = () => setModalInfo({ type: null, item: null })
+  const showModal = (type, item = null) => setModalInfo({ type, item })
 
-  const { activeChannel } = useSelector(state => state.channels)
+  const { data: channels, isLoading } = useGetChannelsQuery()
+  const { data: messages } = useGetMessagesQuery()
+  const [addNewMessage, { isLoading: isMessageSending }] = useAddNewMessageMutation()
+
+  const { activeChannelId } = useSelector(state => state.ui)
   const { username } = useSelector(state => state.auth)
-  const channels = useSelector(channelsSelectors.selectAll)
-  const messages = useSelector(messagesSelectors.selectAll)
 
-  const filteredMessages = messages.filter(message => message.channelId === activeChannel.id)
+  const filteredMessages = messages?.filter(message => message.channelId === activeChannelId)
 
   useEffect(() => {
     if (!isLoading && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [activeChannel, isLoading])
+  }, [activeChannelId, isLoading])
 
   useEffect(() => {
     socket.on('newMessage', (payload) => {
@@ -41,29 +52,41 @@ const ChatPage = () => {
         })
       )
     })
+    socket.on('newChannel', (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          draftChannels.push(payload)
+        })
+      )
+    })
+    socket.on('removeChannel', (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          return draftChannels.filter(channel => channel.id !== payload.id)
+        })
+      )
+    })
+    socket.on('renameChannel', (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          const channel = draftChannels.find(c => c.id === payload.id)
+          channel.name = payload.name
+        })
+      )
+    })
 
     return () => {
       socket.off('newMessage')
+      socket.off('newChannel')
+      socket.off('removeChannel')
     }
   }, [dispatch, socket])
 
   useEffect(() => {
-    if (loadedChannels && loadedMessages) {
-      try {
-        dispatch(addChannels(loadedChannels))
-        dispatch(addMessages(loadedMessages))
-      }
-      catch (error) {
-        console.error(error)
-      }
+    if (channels?.length > 0 && !activeChannelId) {
+      dispatch(setActiveChannelId(channels[0].id))
     }
-  }, [dispatch, loadedChannels, loadedMessages])
-
-  useEffect(() => {
-    if (channels.length > 0 && !activeChannel) {
-      dispatch(setActiveChannel(channels[0]))
-    }
-  }, [channels, dispatch, activeChannel])
+  }, [channels, dispatch, activeChannelId])
 
   const formik = useFormik({
     initialValues: {
@@ -73,7 +96,7 @@ const ChatPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        values.channelId = activeChannel.id
+        values.channelId = activeChannelId
         await addNewMessage(values)
         values.body = ''
         inputRef.current.focus()
@@ -81,7 +104,6 @@ const ChatPage = () => {
       catch (error) {
         formik.setSubmitting(false)
         console.log(error)
-        throw error
       }
     }
   })
@@ -98,7 +120,7 @@ const ChatPage = () => {
             <div className="d-flex align-items-center">
               <h6 className="mb-0 fw-bold">Каналы</h6>
             </div>
-            <Button variant="link" size="sm" className="p-0">
+            <Button variant="link" size="sm" className="p-0" onClick={() => showModal('adding')}>
               <PlusSquare size={20} />
             </Button>
           </div>
@@ -114,15 +136,39 @@ const ChatPage = () => {
                 as='li'
                 key={channel.id}
                 className="w-100"
-              >
-                <Button
-                  className='w-100 rounded-0 text-start'
-                  variant={activeChannel.name === channel.name ? 'secondary' : ''}
-                  onClick={() => dispatch(setActiveChannel(channel))}
-                >
-                  <span className="me-1">#</span>
-                  {channel.name}
-                </Button>
+              > {channel.removable === false
+                ?
+                  <Button
+                    className='w-100 rounded-0 text-start'
+                    variant={activeChannelId === channel.id ? 'secondary' : ''}
+                    onClick={() => dispatch(setActiveChannelId(channel.id))}
+                  >
+                    <span className="me-1">#</span>
+                    {channel.name}
+                  </Button>
+                :
+                  <Dropdown as={ButtonGroup} className="d-flex">
+                    <Button
+                      className="w-100 rounded-0 text-start text-truncate"
+                      variant={activeChannelId === channel.id ? 'secondary' : ''}
+                      onClick={() => dispatch(setActiveChannelId(channel.id))}
+                    >
+                      <span className="me-1">#</span>
+                      {channel.name}
+                    </Button>
+                    <Dropdown.Toggle 
+                      split
+                      variant={activeChannelId === channel.id ? 'secondary' : ''}
+                      className='flex-grow-0'
+                    >
+                      <span className="visually-hidden">Управление каналом</span>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => showModal('removing', channel.id)}>Удалить</Dropdown.Item>
+                      <Dropdown.Item onClick={() => showModal('renaming', channel)}>Переименовать</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
               </Nav.Item>
             ))}
           </Nav>
@@ -130,7 +176,7 @@ const ChatPage = () => {
         <Col className='p-0 h-100'>
           <div className='d-flex flex-column h-100'>
             <div className="bg-light mb-4 p-3 shadow-sm small">
-              <p className="m-0"><b># {activeChannel.name}</b></p>
+              <p className="m-0"><b># {channels.find(c => c.id === activeChannelId)?.name}</b></p>
               <span className="text-muted">
                 {filteredMessages ? filteredMessages.length : 0} сообщений
               </span>
@@ -157,13 +203,12 @@ const ChatPage = () => {
                     value={formik.values.body}
                     onChange={formik.handleChange}
                     ref={inputRef}
-                  >
-                  </Form.Control>
+                  />
                   <Button
                     variant=""
                     type="submit"
                     className="btn-group-vertical border-0"
-                    disabled={formik.values.body === ''}
+                    disabled={formik.values.body === '' || isMessageSending}
                   >
                     <ArrowRightSquare size={20} />
                     <span className="visually-hidden">Отправить</span>
@@ -174,6 +219,7 @@ const ChatPage = () => {
           </div>
         </Col>
       </Row>
+      {renderModal({ modalInfo, hideModal })}
     </Container>
   )
 }

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './authSlice.js'
-import channelsReducer from './channelsSlice.js'
-import messagesReducer from './messagesSlice.js'
+import uiReducer from './uiSlice.js'
 import { channelsApi } from '../services/channelsApi.js'
 import { messagesApi } from '../services/messagesApi.js'
 import { authApi } from '../services/authApi.js'
@@ -9,8 +8,7 @@ import { authApi } from '../services/authApi.js'
 export default configureStore({
   reducer: {
     auth: authReducer,
-    channels: channelsReducer,
-    messages: messagesReducer,
+    ui: uiReducer,
     [authApi.reducerPath]: authApi.reducer,
     [channelsApi.reducerPath]: channelsApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,

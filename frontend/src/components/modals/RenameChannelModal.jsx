@@ -10,7 +10,7 @@ const RenameChannelModal = (props) => {
   const channelsNames = channels.map(channel => channel.name)
   const { onHide, modalInfo } = props
   const { id, name } = modalInfo.item
-  const [renameChannel, { isLoading }] = useRenameChannelMutation()
+  const [renameChannel] = useRenameChannelMutation()
 
   const validationSchema = useMemo(() => 
     yup.object({
@@ -70,7 +70,7 @@ const RenameChannelModal = (props) => {
             </Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button variant='secondary' className="me-2" onClick={onHide}>Отменить</Button>
-              <Button type="submit" variant='primary' disabled={isLoading}>Отправить</Button>
+              <Button type="submit" variant='primary' disabled={formik.isSubmitting}>Отправить</Button>
             </div>
           </Form.Group>
         </Form>

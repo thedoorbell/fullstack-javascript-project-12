@@ -22,6 +22,7 @@ const renderModal = ({ modalInfo, hideModal }) => {
 
 const ChatPage = () => {
   const inputRef = useRef()
+  const messagesEndRef = useRef()
   const dispatch = useDispatch()
   const socket = useContext(SocketContext)
 
@@ -31,18 +32,36 @@ const ChatPage = () => {
 
   const { data: channels, isLoading } = useGetChannelsQuery()
   const { data: messages } = useGetMessagesQuery()
-  const [addNewMessage, { isLoading: isMessageSending }] = useAddNewMessageMutation()
+  const [addNewMessage] = useAddNewMessageMutation()
 
   const { activeChannelId } = useSelector(state => state.ui)
   const { username } = useSelector(state => state.auth)
 
   const filteredMessages = messages?.filter(message => message.channelId === activeChannelId)
 
-  useEffect(() => {
-    if (!isLoading && inputRef.current) {
-      inputRef.current.focus()
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView()
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      body: '',
+      channelId: '',
+      username,
+    },
+    onSubmit: async (values) => {
+      try {
+        values.channelId = activeChannelId
+        await addNewMessage(values)
+        values.body = ''
+        inputRef.current.focus()
+      }
+      catch (error) {
+        formik.setSubmitting(false)
+        console.log(error)
+      }
     }
-  }, [activeChannelId, isLoading])
+  })
 
   useEffect(() => {
     socket.on('newMessage', (payload) => {
@@ -88,25 +107,15 @@ const ChatPage = () => {
     }
   }, [channels, dispatch, activeChannelId])
 
-  const formik = useFormik({
-    initialValues: {
-      body: '',
-      channelId: '',
-      username,
-    },
-    onSubmit: async (values) => {
-      try {
-        values.channelId = activeChannelId
-        await addNewMessage(values)
-        values.body = ''
-        inputRef.current.focus()
-      }
-      catch (error) {
-        formik.setSubmitting(false)
-        console.log(error)
-      }
+  useEffect(() => {
+    if (!formik.isSubmitting && inputRef.current) {
+      inputRef.current.focus()
     }
-  })
+  }, [activeChannelId, formik.isSubmitting])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, activeChannelId])
 
   if (isLoading) {
     return <SpinnerComponent />
@@ -187,6 +196,7 @@ const ChatPage = () => {
                     <b>{message.username}</b>: {message.body}
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
             <div className="mt-auto px-5 py-3">
               <Form
@@ -203,12 +213,13 @@ const ChatPage = () => {
                     value={formik.values.body}
                     onChange={formik.handleChange}
                     ref={inputRef}
+                    disabled={formik.isSubmitting}
                   />
                   <Button
                     variant=""
                     type="submit"
                     className="btn-group-vertical border-0"
-                    disabled={formik.values.body === '' || isMessageSending}
+                    disabled={formik.values.body === '' || formik.isSubmitting}
                   >
                     <ArrowRightSquare size={20} />
                     <span className="visually-hidden">Отправить</span>

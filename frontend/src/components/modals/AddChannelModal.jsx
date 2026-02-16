@@ -11,7 +11,7 @@ const AddChannelModal = (props) => {
   const { data: channels } = useGetChannelsQuery()
   const channelsNames = channels.map(channel => channel.name)
   const { onHide } = props
-  const [addNewChannel, { isLoading }] = useAddNewChannelMutation()
+  const [addNewChannel] = useAddNewChannelMutation()
   const dispatch = useDispatch()
 
   const validationSchema = useMemo(() => 
@@ -72,7 +72,7 @@ const AddChannelModal = (props) => {
             </Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button variant='secondary' className="me-2" onClick={onHide}>Отменить</Button>
-              <Button type="submit" variant='primary' disabled={isLoading}>Отправить</Button>
+              <Button type="submit" variant='primary' disabled={formik.isSubmitting}>Отправить</Button>
             </div>
           </Form.Group>
         </Form>

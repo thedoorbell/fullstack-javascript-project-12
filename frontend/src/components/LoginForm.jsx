@@ -9,7 +9,7 @@ import { useLogInMutation } from '../services/authApi.js'
 
 const LoginForm = () => {
   
-  const [logIn, { isLoading, isError }] = useLogInMutation()
+  const [logIn, { isError }] = useLogInMutation()
   const inputRef = useRef()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -86,7 +86,7 @@ const LoginForm = () => {
                   type="submit"
                   variant="outline-primary"
                   className="w-100 mb-3"
-                  disabled={isLoading}
+                  disabled={formik.isSubmitting}
                 >
                   Войти
                 </Button>

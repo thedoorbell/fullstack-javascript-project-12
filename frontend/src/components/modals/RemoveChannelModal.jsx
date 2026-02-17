@@ -1,10 +1,12 @@
 import { Modal, Button } from 'react-bootstrap'
 import { useRemoveChannelMutation } from '../../services/channelsApi'
+import { useTranslation } from 'react-i18next'
 
 const RemoveChannelModal = (props) => {
   const { onHide, modalInfo } = props
   const { item: id } = modalInfo
   const [removeChannel, { isLoading }] = useRemoveChannelMutation()
+  const { t } = useTranslation()
 
   const onRemove = async () => {
     try {
@@ -19,14 +21,14 @@ const RemoveChannelModal = (props) => {
   return (
     <Modal centered show onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Удалить канал</Modal.Title>
+        <Modal.Title>{t('removeChannel')}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <p className="lead">Уверены?</p>
+        <p className="lead">{t('youSure')}</p>
         <div className="d-flex justify-content-end">
-          <Button variant='secondary' className="me-2" onClick={onHide}>Отменить</Button>
-          <Button variant='danger' onClick={onRemove} disabled={isLoading}>Отправить</Button>
+          <Button variant='secondary' className="me-2" onClick={onHide}>{t('cancel')}</Button>
+          <Button variant='danger' onClick={onRemove} disabled={isLoading}>{t('send')}</Button>
         </div>
       </Modal.Body>
     </Modal>

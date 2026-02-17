@@ -4,6 +4,7 @@ import App from './App'
 import resources from './locales/index.js'
 import { createSocket } from './services/socketConfig'
 import { SocketContext } from './contexts/SocketContext'
+import * as yup from 'yup'
 
 const init = async (token) => {
   const i18n = i18next.createInstance()
@@ -14,7 +15,21 @@ const init = async (token) => {
     .init({
       resources,
       fallbackLng: 'ru',
+      interpolation: {
+        escapeValue: false
+    }
     })
+  yup.setLocale({
+    mixed: {
+      required: i18n.t('errors.required'),
+      notOneOf: i18n.t('errors.notOneOf'),
+      oneOf: i18n.t('errors.oneOf'),
+    },
+    string: {
+      min: ({ min }) => i18n.t('errors.min', { min }),
+      max: ({ max }) => i18n.t('errors.max', { max }),
+    },
+  })
 
   return (
     <I18nextProvider i18n={i18n}>

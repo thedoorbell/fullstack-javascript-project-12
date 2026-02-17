@@ -1,6 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { Modal, Form, Button } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 
 import { useGetChannelsQuery, useRenameChannelMutation } from '../../services/channelsApi'
@@ -11,16 +12,17 @@ const RenameChannelModal = (props) => {
   const { onHide, modalInfo } = props
   const { id, name } = modalInfo.item
   const [renameChannel] = useRenameChannelMutation()
+  const { t } = useTranslation()
 
   const validationSchema = useMemo(() => 
     yup.object({
       name: yup
         .string()
-        .required('Обязательное поле')
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов')
-        .notOneOf(channelsNames, 'Должно быть уникальным')
-    }), [channelsNames])
+        .required(t('errors.required'))
+        .min(3, t('errors.min', { min: 3 }))
+        .max(20, t('errors.max', { max: 20 }))
+        .notOneOf(channelsNames, t('errors.notOneOf'))
+    }), [channelsNames, t])
 
   const formik = useFormik({
     initialValues: { name },
@@ -48,7 +50,7 @@ const RenameChannelModal = (props) => {
   return (
     <Modal centered show onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('renameChannel')}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -64,13 +66,13 @@ const RenameChannelModal = (props) => {
               id="name"
               isInvalid={formik.submitCount > 0 && formik.errors.name}
             />
-            <Form.Label visuallyHidden htmlFor='name'>Имя канала</Form.Label>
+            <Form.Label visuallyHidden htmlFor='name'>{t('channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
             </Form.Control.Feedback>
             <div className="d-flex justify-content-end">
-              <Button variant='secondary' className="me-2" onClick={onHide}>Отменить</Button>
-              <Button type="submit" variant='primary' disabled={formik.isSubmitting}>Отправить</Button>
+              <Button variant='secondary' className="me-2" onClick={onHide}>{t('cancel')}</Button>
+              <Button type="submit" variant='primary' disabled={formik.isSubmitting}>{t('send')}</Button>
             </div>
           </Form.Group>
         </Form>

@@ -1,1 +1,42 @@
-export default {}
+export default {
+  translation: {
+    errors: {
+      required: 'Обязательное поле',
+      min: 'Не менее {{min}} символов',
+      max: 'От 3 до {{max}} символов',
+      oneOf: 'Пароли должны совпадать',
+      notOneOf: 'Должно быть уникальным',
+      userExists: 'Такой пользователь уже существует',
+      wrongCredentials: 'Неверные имя пользователя или пароль',
+      networkError: 'Ошибка сети, проверьте соединение'
+    },
+    signupForm: 'Регистрация',
+    signup: 'Зарегистрироваться',
+    username: 'Имя пользователя',
+    password: 'Пароль',
+    confirmPassword: 'Подтвердите пароль',
+    nickname: 'Ваш ник',
+    login: 'Войти',
+    logout: 'Выйти',
+    haveAccount: 'Нет аккаунта?',
+    channels: 'Каналы',
+    editChannel: 'Управление каналом',
+    remove: 'Удалить',
+    rename: 'Переименовать',
+    messages_one: '{{count}} сообщение',        // 1, 21, 31, 101...
+    messages_few: '{{count}} сообщения',        // 2-4, 22-24, 32-34...
+    messages_many: '{{count}} сообщений',
+    send: 'Отправить',
+    writeYourMessage: 'Введите сообщение...',
+    newMessage: 'Новое сообщение',
+    addChannel: 'Добавить канал',
+    removeChannel: 'Удалить канал',
+    channelName: 'Имя канала',
+    renameChannel: 'Переименовать',
+    cancel: 'Отменить',
+    notFound: '404 - Страница не найдена',
+    sorry: 'Извините, запрашиваемая страница не существует.',
+    goToMainPage: 'Вернуться на главную',
+    youSure: 'Уверены?',
+  },
+}

@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 import { Button, Container, Navbar } from 'react-bootstrap'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux' 
+import { useTranslation } from 'react-i18next'
 
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
@@ -34,6 +35,7 @@ const PublicRoute = ({ children }) => {
 function App() {
   const dispatch = useDispatch()
   const { loggedIn, loading } = useSelector(state => state.auth)
+  const { t } = useTranslation()
 
   useEffect(() => {
     dispatch(authInit())
@@ -50,7 +52,7 @@ function App() {
           <Container>
             <Navbar.Brand as={Link} to="/">Messenger</Navbar.Brand>
             {loggedIn &&
-              <Button variant="primary" onClick={() => dispatch(logOut())}>Выйти</Button>}
+              <Button variant="primary" onClick={() => dispatch(logOut())}>{t('logout')}</Button>}
           </Container>
         </Navbar>
         <Routes>

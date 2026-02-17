@@ -16,7 +16,7 @@ const RemoveChannelModal = (props) => {
       onHide()
     }
     catch (error) {
-      toast.error(t('networkError'))
+      toast.error(t('errors.networkError'))
       console.log(error)
     }
   }

@@ -39,7 +39,7 @@ const AddChannelModal = (props) => {
       }
       catch (error) {
         formik.setSubmitting(false)
-        toast.error(t('networkError'))
+        toast.error(t('errors.networkError'))
         console.log(error)
       }
     },

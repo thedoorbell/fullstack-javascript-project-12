@@ -5,10 +5,13 @@ import resources from './locales/index.js'
 import { createSocket } from './services/socketConfig'
 import { SocketContext } from './contexts/SocketContext'
 import * as yup from 'yup'
+import filter from 'leo-profanity'
 
 const init = async (token) => {
   const i18n = i18next.createInstance()
   const socket = createSocket(token)
+  filter.loadDictionary('ru')
+  filter.add(filter.getDictionary('en'))
 
   await i18n
     .use(initReactI18next)

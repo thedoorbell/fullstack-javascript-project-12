@@ -4,6 +4,7 @@ import { useRef, useEffect, useContext, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import filter from 'leo-profanity'
 
 import { SocketContext } from '../contexts/SocketContext'
 import { useGetChannelsQuery, channelsApi } from '../services/channelsApi'
@@ -66,7 +67,7 @@ const ChatPage = () => {
   })
 
   useEffect(() => {
-    
+
   }, [t])
 
   useEffect(() => {
@@ -163,7 +164,7 @@ const ChatPage = () => {
                     onClick={() => dispatch(setActiveChannelId(channel.id))}
                   >
                     <span className="me-1">#</span>
-                    {channel.name}
+                    {filter.clean(channel.name)}
                   </Button>
                 :
                   <Dropdown as={ButtonGroup} className="d-flex">
@@ -173,7 +174,7 @@ const ChatPage = () => {
                       onClick={() => dispatch(setActiveChannelId(channel.id))}
                     >
                       <span className="me-1">#</span>
-                      {channel.name}
+                      {filter.clean(channel.name)}
                     </Button>
                     <Dropdown.Toggle 
                       split
@@ -203,7 +204,7 @@ const ChatPage = () => {
             <div id="messages-box" className="chat-messages overflow-auto px-5">
               {filteredMessages?.map(message => (
                 <div className="text-break mb-2" key={message.id}>
-                    <b>{message.username}</b>: {message.body}
+                    <b>{message.username}</b>: {filter.clean(message.body)}
                 </div>
               ))}
               <div ref={messagesEndRef} />

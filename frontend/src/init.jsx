@@ -6,6 +6,8 @@ import { createSocket } from './services/socketConfig'
 import { SocketContext } from './contexts/SocketContext'
 import * as yup from 'yup'
 import filter from 'leo-profanity'
+import { Provider, ErrorBoundary } from '@rollbar/react'
+import rollbarConfig from '../rollbar.config.js'
 
 const init = async (token) => {
   const i18n = i18next.createInstance()
@@ -35,11 +37,15 @@ const init = async (token) => {
   })
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <SocketContext.Provider value={socket}>
-        <App />
-      </SocketContext.Provider>
-    </I18nextProvider>
+    <Provider config={rollbarConfig}>
+      <ErrorBoundary>
+        <I18nextProvider i18n={i18n}>
+          <SocketContext.Provider value={socket}>
+            <App />
+          </SocketContext.Provider>
+        </I18nextProvider>
+      </ErrorBoundary>
+    </Provider>
   )
 }
 

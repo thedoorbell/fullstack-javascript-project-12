@@ -23,8 +23,8 @@ export default {
     editChannel: 'Управление каналом',
     remove: 'Удалить',
     rename: 'Переименовать',
-    messages_one: '{{count}} сообщение',        // 1, 21, 31, 101...
-    messages_few: '{{count}} сообщения',        // 2-4, 22-24, 32-34...
+    messages_one: '{{count}} сообщение',
+    messages_few: '{{count}} сообщения',
     messages_many: '{{count}} сообщений',
     send: 'Отправить',
     writeYourMessage: 'Введите сообщение...',

@@ -38,5 +38,8 @@ export default {
     sorry: 'Извините, запрашиваемая страница не существует.',
     goToMainPage: 'Вернуться на главную',
     youSure: 'Уверены?',
+    channelRenamed: 'Канал переименован',
+    channelRemoved: 'Канал удалён',
+    channelAdded: 'Канал создан',
   },
 }

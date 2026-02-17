@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react
 import { Button, Container, Navbar } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux' 
 import { useTranslation } from 'react-i18next'
+import { ToastContainer } from 'react-toastify'
 
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
@@ -83,6 +84,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
   )
 }

@@ -66,6 +66,10 @@ const ChatPage = () => {
   })
 
   useEffect(() => {
+    
+  }, [t])
+
+  useEffect(() => {
     socket.on('newMessage', (payload) => {
       dispatch(
         messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {

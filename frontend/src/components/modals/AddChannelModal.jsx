@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
 import { setActiveChannelId } from '../../slices/uiSlice'
@@ -32,11 +33,13 @@ const AddChannelModal = (props) => {
     onSubmit: async (values) => {
       try {
         const createdChannel = await addNewChannel(values).unwrap()
+        toast.success(t('channelAdded'))
         onHide()
         dispatch(setActiveChannelId(createdChannel.id))
       }
       catch (error) {
         formik.setSubmitting(false)
+        toast.error(t('networkError'))
         console.log(error)
       }
     },

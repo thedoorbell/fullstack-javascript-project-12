@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
 import { useGetChannelsQuery, useRenameChannelMutation } from '../../services/channelsApi'
@@ -30,11 +31,13 @@ const RenameChannelModal = (props) => {
     onSubmit: async (values) => {
       try {
         const name = values.name
-        await renameChannel({ id, name })
+        await renameChannel({ id, name }).unwrap()
+        toast.success(t('channelRenamed'))
         onHide()
       }
       catch (error) {
         formik.setSubmitting(false)
+        toast.error(t('networkError'))
         console.log(error)
       }
     },

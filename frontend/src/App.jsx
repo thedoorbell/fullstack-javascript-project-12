@@ -4,7 +4,6 @@ import { Button, Container, Navbar } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux' 
 import { useTranslation } from 'react-i18next'
 import { ToastContainer } from 'react-toastify'
-import { useRollbar } from '@rollbar/react'
 
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
@@ -35,14 +34,9 @@ const PublicRoute = ({ children }) => {
 }
 
 function App() {
-  const rollbar = useRollbar()
   const dispatch = useDispatch()
   const { loggedIn, loading } = useSelector(state => state.auth)
   const { t } = useTranslation()
-
-  useEffect(() => {
-    rollbar.error('Test error', new Error('This is a test'))
-  })
 
   useEffect(() => {
     dispatch(authInit())

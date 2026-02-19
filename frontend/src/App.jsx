@@ -51,35 +51,26 @@ function App() {
       <BrowserRouter>
         <Navbar bg="light" variant="light" expand="lg" className="shadow-sm">
           <Container>
-            <Navbar.Brand as={Link} to="/">Messenger</Navbar.Brand>
+            <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
             {loggedIn &&
               <Button variant="primary" onClick={() => dispatch(logOut())}>{t('logout')}</Button>}
           </Container>
         </Navbar>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <ChatPage />
-              </PrivateRoute>
-            }
+          <Route path="/" element={
+            <PrivateRoute>
+              <ChatPage />
+            </PrivateRoute>}
           />
-          <Route
-            path="login"
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
+          <Route path="login" element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>}
           />
-          <Route 
-            path="signup" 
-            element={
-              <PublicRoute>
-                <SignupPage />
-              </PublicRoute>
-            } 
+          <Route path="signup" element={
+            <PublicRoute>
+              <SignupPage />
+            </PublicRoute>} 
           />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

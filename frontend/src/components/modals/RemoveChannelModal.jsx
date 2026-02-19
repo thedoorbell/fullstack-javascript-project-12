@@ -1,10 +1,9 @@
 import { Modal, Button } from 'react-bootstrap'
-import { useRemoveChannelMutation } from '../../services/channelsApi'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
+import { useRemoveChannelMutation } from '../../services/channelsApi'
 
-const RemoveChannelModal = (props) => {
-  const { onHide, modalInfo } = props
+const RemoveChannelModal = ({ modalInfo, onHide }) => {
   const { item: id } = modalInfo
   const [removeChannel, { isLoading }] = useRemoveChannelMutation()
   const { t } = useTranslation()
@@ -26,7 +25,6 @@ const RemoveChannelModal = (props) => {
       <Modal.Header closeButton>
         <Modal.Title>{t('removeChannel')}</Modal.Title>
       </Modal.Header>
-
       <Modal.Body>
         <p className="lead">{t('youSure')}</p>
         <div className="d-flex justify-content-end">

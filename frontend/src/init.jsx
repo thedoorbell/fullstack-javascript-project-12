@@ -1,13 +1,14 @@
 import i18next from 'i18next'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
+import { Provider, ErrorBoundary } from '@rollbar/react'
+import filter from 'leo-profanity'
+import * as yup from 'yup'
+
 import App from './App'
 import resources from './locales/index.js'
+import rollbarConfig from '../rollbar.config.js'
 import { createSocket } from './services/socketConfig'
 import { SocketContext } from './contexts/SocketContext'
-import * as yup from 'yup'
-import filter from 'leo-profanity'
-import { Provider, ErrorBoundary } from '@rollbar/react'
-import rollbarConfig from '../rollbar.config.js'
 
 const init = async (token) => {
   const i18n = i18next.createInstance()
@@ -22,7 +23,7 @@ const init = async (token) => {
       fallbackLng: 'ru',
       interpolation: {
         escapeValue: false
-    }
+      }
     })
   yup.setLocale({
     mixed: {

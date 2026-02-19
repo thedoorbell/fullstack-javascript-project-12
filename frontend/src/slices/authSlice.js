@@ -34,15 +34,11 @@ const authSlice = createSlice({
 
 export const authInit = () => (dispatch) => {
   dispatch(setLoading(true))
-  
   const token = localStorage.getItem('token')
   const username = localStorage.getItem('username')
-  
+
   if (token && username) {
-    dispatch(setCredentials({
-      token,
-      username: JSON.parse(username),
-    }))
+    dispatch(setCredentials({ token, username }))
   }
 
   dispatch(setLoading(false))

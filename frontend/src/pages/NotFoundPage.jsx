@@ -5,9 +5,10 @@ const NotFoundPage = () => {
   const { t } = useTranslation()
   
   return (
-    <div>
-      <h1>{t('notFound')}</h1>
-      <p>{t('sorry')}</p>
+    <div className="text-center">
+      <img alt={t('notFound')} className="img-fluid h-25" src="/src/assets/notfound.svg"></img>
+      <h1 className="text-muted">{t('notFound')}</h1>
+      <p className="text-muted">{t('sorry')}</p>
       <Link to="/">{t('goToMainPage')}</Link>
     </div>
   )

@@ -38,7 +38,10 @@ export const authInit = () => (dispatch) => {
   const username = localStorage.getItem('username')
 
   if (token && username) {
-    dispatch(setCredentials({ token, username }))
+    dispatch(setCredentials({
+      token,
+      username: JSON.parse(username),
+    }))
   }
 
   dispatch(setLoading(false))

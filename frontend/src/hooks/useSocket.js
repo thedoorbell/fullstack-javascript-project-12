@@ -5,7 +5,6 @@ import { useGetChannelsQuery, channelsApi } from '../services/channelsApi'
 import { messagesApi } from '../services/messagesApi'
 import { setActiveChannelId } from '../slices/uiSlice.js'
 
-
 const useSocket = () => {
   const socket = useContext(SocketContext)
   const { data: channels } = useGetChannelsQuery()

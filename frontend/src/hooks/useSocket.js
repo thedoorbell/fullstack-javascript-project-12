@@ -24,6 +24,7 @@ const useSocket = () => {
 
   useEffect(() => {
       const handleNewMessage = (payload) => {
+        console.log('SOCKET: new message', payload)
         dispatch(
           messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {
             draftMessages.push(payload)

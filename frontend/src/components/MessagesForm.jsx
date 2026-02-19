@@ -22,8 +22,8 @@ const MessagesForm = ({ inputRef }) => {
     onSubmit: async (values) => {
       try {
         values.channelId = activeChannelId
-        await addNewMessage(values)
-        values.body = ''
+        await addNewMessage(values).unwrap()
+        formik.resetForm()
       }
       catch (error) {
         formik.setSubmitting(false)

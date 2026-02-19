@@ -5,6 +5,7 @@ import filter from 'leo-profanity'
 const MessagesList = ({ channels, messages, messagesEndRef }) => {
   const { activeChannelId } = useSelector(state => state.ui)
   const { t } = useTranslation()
+  console.log('RENDER messages:', messages)
 
   return (
     <>

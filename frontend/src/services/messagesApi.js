@@ -6,11 +6,13 @@ const baseQuery = getBaseQuery()
 export const messagesApi = createApi({
   reducerPath: 'messagesApi',
   baseQuery,
+  tagTypes: ['Messages'],
   endpoints: builder => ({
     getMessages: builder.query({
       query: () => ({
         url: '/messages',
       }),
+      providesTags: ['Messages'],
     }),
     addNewMessage: builder.mutation({
       query: message => ({
@@ -18,6 +20,7 @@ export const messagesApi = createApi({
         method: 'POST',
         body: message,
       }),
+      invalidatesTags: ['Messages'],
     })
   }),
 })

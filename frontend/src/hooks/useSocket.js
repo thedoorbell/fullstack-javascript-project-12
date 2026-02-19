@@ -23,7 +23,6 @@ const useSocket = () => {
 
   useEffect(() => {
       const handleNewMessage = (payload) => {
-        console.log('SOCKET: new message', payload)
         dispatch(
           messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {
             draftMessages.push(payload)
@@ -62,10 +61,10 @@ const useSocket = () => {
       socket.on('renameChannel', handleRenameChannel)
   
       return () => {
-        socket.off('newMessage')
-        socket.off('newChannel')
-        socket.off('removeChannel')
-        socket.off('renameChannel')
+        socket.off('newMessage', handleNewMessage)
+        socket.off('newChannel', handleNewChannel)
+        socket.off('removeChannel', handleRemoveChannel)
+        socket.off('renameChannel', handleRenameChannel)
       }
     }, [dispatch, socket])
 }

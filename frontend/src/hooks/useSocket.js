@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, useRef } from 'react'
 import { SocketContext } from '../contexts/SocketContext'
 import { useGetChannelsQuery, channelsApi } from '../services/channelsApi'
 import { messagesApi } from '../services/messagesApi'
@@ -11,6 +11,16 @@ const useSocket = () => {
   const { data: channels } = useGetChannelsQuery()
   const { activeChannelId } = useSelector(state => state.ui)
   const dispatch = useDispatch()
+  const channelsRef = useRef(channels)
+  const activeChannelIdRef = useRef(activeChannelId)
+
+  useEffect(() => {
+    channelsRef.current = channels
+  }, [channels])
+
+  useEffect(() => {
+    activeChannelIdRef.current = activeChannelId
+  }, [activeChannelId])
 
   useEffect(() => {
       const handleNewMessage = (payload) => {
@@ -33,8 +43,8 @@ const useSocket = () => {
             return draftChannels.filter(channel => channel.id !== payload.id)
           })
         )
-        if (payload.id === activeChannelId) {
-          dispatch(setActiveChannelId(channels[0].id))
+        if (payload.id === activeChannelIdRef.current) {
+          dispatch(setActiveChannelId(channelsRef.current[0].id))
         }
       }
       const handleRenameChannel = (payload) => {
@@ -57,7 +67,7 @@ const useSocket = () => {
         socket.off('removeChannel')
         socket.off('renameChannel')
       }
-    }, [dispatch, socket, channels, activeChannelId])
+    }, [dispatch, socket])
 }
 
 export default useSocket

@@ -22,51 +22,51 @@ const useSocket = () => {
   }, [activeChannelId])
 
   useEffect(() => {
-      const handleNewMessage = (payload) => {
-        dispatch(
-          messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {
-            draftMessages.push(payload)
-          })
-        )
+    const handleNewMessage = (payload) => {
+      dispatch(
+        messagesApi.util.updateQueryData('getMessages', undefined, (draftMessages) => {
+          draftMessages.push(payload)
+        }),
+      )
+    }
+    const handleNewChannel = (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          draftChannels.push(payload)
+        }),
+      )
+    }
+    const handleRemoveChannel = (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          return draftChannels.filter(channel => channel.id !== payload.id)
+        }),
+      )
+      if (payload.id === activeChannelIdRef.current) {
+        dispatch(setActiveChannelId(channelsRef.current[0].id))
       }
-      const handleNewChannel = (payload) => {
-        dispatch(
-          channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
-            draftChannels.push(payload)
-          })
-        )
-      }
-      const handleRemoveChannel = (payload) => {
-        dispatch(
-          channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
-            return draftChannels.filter(channel => channel.id !== payload.id)
-          })
-        )
-        if (payload.id === activeChannelIdRef.current) {
-          dispatch(setActiveChannelId(channelsRef.current[0].id))
-        }
-      }
-      const handleRenameChannel = (payload) => {
-        dispatch(
-          channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
-            const channel = draftChannels.find(c => c.id === payload.id)
-            channel.name = payload.name
-          })
-        )
-      }
-      
-      socket.on('newMessage', handleNewMessage)
-      socket.on('newChannel', handleNewChannel)
-      socket.on('removeChannel', handleRemoveChannel)
-      socket.on('renameChannel', handleRenameChannel)
-  
-      return () => {
-        socket.off('newMessage', handleNewMessage)
-        socket.off('newChannel', handleNewChannel)
-        socket.off('removeChannel', handleRemoveChannel)
-        socket.off('renameChannel', handleRenameChannel)
-      }
-    }, [dispatch, socket])
+    }
+    const handleRenameChannel = (payload) => {
+      dispatch(
+        channelsApi.util.updateQueryData('getChannels', undefined, (draftChannels) => {
+          const channel = draftChannels.find(c => c.id === payload.id)
+          channel.name = payload.name
+        }),
+      )
+    }
+
+    socket.on('newMessage', handleNewMessage)
+    socket.on('newChannel', handleNewChannel)
+    socket.on('removeChannel', handleRemoveChannel)
+    socket.on('renameChannel', handleRenameChannel)
+
+    return () => {
+      socket.off('newMessage', handleNewMessage)
+      socket.off('newChannel', handleNewChannel)
+      socket.off('removeChannel', handleRemoveChannel)
+      socket.off('renameChannel', handleRenameChannel)
+    }
+  }, [dispatch, socket])
 }
 
 export default useSocket

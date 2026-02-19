@@ -5,10 +5,10 @@ export const getChannelsSchema = (channels, t) => yup.object({
     .required(t('errors.required'))
     .min(3, t('errors.minmax'))
     .max(20, t('errors.minmax'))
-    .notOneOf(channels.map(channel => channel.name), t('errors.notOneOf'))
+    .notOneOf(channels.map(channel => channel.name), t('errors.notOneOf')),
 })
 
-export const getSingupSchema = (t) => yup.object({
+export const getSingupSchema = t => yup.object({
   username: yup.string()
     .required(t('errors.required'))
     .min(3, t('errors.minmax'))
@@ -18,5 +18,5 @@ export const getSingupSchema = (t) => yup.object({
     .min(6, t('errors.min', { min: 6 })),
   confirmPassword: yup.string()
     .required('')
-    .oneOf([yup.ref('password'), ''], t('errors.oneOf'))
+    .oneOf([yup.ref('password'), ''], t('errors.oneOf')),
 })

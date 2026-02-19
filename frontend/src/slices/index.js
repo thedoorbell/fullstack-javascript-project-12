@@ -17,6 +17,6 @@ export default configureStore({
     getDefaultMiddleware().concat(
       channelsApi.middleware,
       messagesApi.middleware,
-      authApi.middleware
-    )
+      authApi.middleware,
+    ),
 })

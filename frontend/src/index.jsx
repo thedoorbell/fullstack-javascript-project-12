@@ -7,11 +7,11 @@ import store from './slices/index.js'
 
 const app = async () => {
   const token = localStorage.getItem('token')
-  
+
   createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       {await init(token)}
-    </Provider>
+    </Provider>,
   )
 }
 

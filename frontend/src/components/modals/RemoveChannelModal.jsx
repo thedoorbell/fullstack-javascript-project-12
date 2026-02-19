@@ -19,7 +19,7 @@ const RemoveChannelModal = ({ modalInfo, onHide }) => {
       console.log(error)
     }
   }
-  
+
   return (
     <Modal centered show onHide={onHide}>
       <Modal.Header closeButton>
@@ -28,8 +28,8 @@ const RemoveChannelModal = ({ modalInfo, onHide }) => {
       <Modal.Body>
         <p className="lead">{t('youSure')}</p>
         <div className="d-flex justify-content-end">
-          <Button variant='secondary' className="me-2" onClick={onHide}>{t('cancel')}</Button>
-          <Button variant='danger' onClick={onRemove} disabled={isLoading}>{t('send')}</Button>
+          <Button variant="secondary" className="me-2" onClick={onHide}>{t('cancel')}</Button>
+          <Button variant="danger" onClick={onRemove} disabled={isLoading}>{t('send')}</Button>
         </div>
       </Modal.Body>
     </Modal>

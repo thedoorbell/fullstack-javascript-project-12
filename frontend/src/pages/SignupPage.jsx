@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Button, Card, Col, Form, Row, Container } from 'react-bootstrap'
+import { Button, Card, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -48,13 +48,13 @@ const SignupPage = () => {
         toast.error(t('errors.networkError'))
       }
     },
-  })  
-  
+  })
+
   return (
     <FormBaseCard>
       <Card.Body className="row p-5">
         <h1 className="text-center mb-4">{t('signupForm')}</h1>
-        <Form className='col-12 mt-3 mt-md-0' onSubmit={formik.handleSubmit}>
+        <Form className="col-12 mt-3 mt-md-0" onSubmit={formik.handleSubmit}>
           <fieldset>
             <Form.Group className="form-floating mb-3">
               <Form.Control
@@ -70,7 +70,7 @@ const SignupPage = () => {
                 ref={inputRef}
               />
               <Form.Label htmlFor="username">{t('username')}</Form.Label>
-              <Form.Control.Feedback placement='right' type="invalid"tooltip>
+              <Form.Control.Feedback placement="right" type="invalid"tooltip>
                 {formik.errors.username}
               </Form.Control.Feedback>
             </Form.Group>

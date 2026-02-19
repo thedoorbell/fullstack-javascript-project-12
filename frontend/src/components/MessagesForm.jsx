@@ -30,7 +30,7 @@ const MessagesForm = ({ inputRef }) => {
         toast.error(t('errors.networkError'))
         console.log(error)
       }
-    }
+    },
   })
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const MessagesForm = ({ inputRef }) => {
       inputRef.current.focus()
     }
   }, [inputRef, activeChannelId, formik.isSubmitting])
-  
+
   return (
     <div className="mt-auto px-5 py-3">
       <Form

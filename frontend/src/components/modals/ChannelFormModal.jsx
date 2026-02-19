@@ -18,18 +18,18 @@ const ChannelFormModal = ({ title, inputRef, formik, onHide }) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
-              className='mb-2'
+              className="mb-2"
               name="name"
               id="name"
               isInvalid={formik.submitCount > 0 && formik.errors.name}
             />
-            <Form.Label visuallyHidden htmlFor='name'>{t('channelName')}</Form.Label>
+            <Form.Label visuallyHidden htmlFor="name">{t('channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">
               {formik.errors.name}
             </Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button
-                variant='secondary'
+                variant="secondary"
                 className="me-2"
                 onClick={onHide}
               >
@@ -37,7 +37,7 @@ const ChannelFormModal = ({ title, inputRef, formik, onHide }) => {
               </Button>
               <Button
                 type="submit"
-                variant='primary'
+                variant="primary"
                 disabled={formik.isSubmitting}
               >
                 {t('send')}

@@ -13,7 +13,7 @@ const uiSlice = createSlice({
     setModalInfo: (state, action) => {
       state.modalInfo = action.payload
     },
-  }
+  },
 })
 
 export const { setActiveChannelId, setModalInfo } = uiSlice.actions

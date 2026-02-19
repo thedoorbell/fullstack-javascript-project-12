@@ -36,7 +36,7 @@ export const channelsApi = createApi({
         body: { name },
       }),
       invalidatesTags: ['Channels'],
-    })
+    }),
   }),
 })
 

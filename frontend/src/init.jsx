@@ -22,8 +22,8 @@ const init = async (token) => {
       resources,
       fallbackLng: 'ru',
       interpolation: {
-        escapeValue: false
-      }
+        escapeValue: false,
+      },
     })
   yup.setLocale({
     mixed: {

@@ -47,13 +47,13 @@ const ChatPage = () => {
   if (isLoading) {
     return <SpinnerComponent />
   }
-  
+
   return (
-    <Container className='h-100 my-4 overflow-hidden rounded shadow'>
-      <Row className='h-100 bg-white flex-md-row'>
+    <Container className="h-100 my-4 overflow-hidden rounded shadow">
+      <Row className="h-100 bg-white flex-md-row">
         <ChannelsList channels={channels} showModal={showModal} />
-        <Col className='p-0 h-100'>
-          <div className='d-flex flex-column h-100'>
+        <Col className="p-0 h-100">
+          <div className="d-flex flex-column h-100">
             <MessagesList
               channels={channels}
               messages={filteredMessages}

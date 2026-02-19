@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 import { Button, Container, Navbar } from 'react-bootstrap'
-import { useSelector, useDispatch } from 'react-redux' 
+import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { ToastContainer } from 'react-toastify'
 
@@ -45,32 +45,47 @@ function App() {
   if (loading) {
     return <SpinnerComponent />
   }
-  
+
   return (
-    <div className='d-flex flex-column h-100'>
+    <div className="d-flex flex-column h-100">
       <BrowserRouter>
         <Navbar bg="light" variant="light" expand="lg" className="shadow-sm">
           <Container>
             <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
-            {loggedIn &&
-              <Button variant="primary" onClick={() => dispatch(logOut())}>{t('logout')}</Button>}
+            {loggedIn
+              && <Button variant="primary" onClick={() => dispatch(logOut())}>{t('logout')}</Button>}
           </Container>
         </Navbar>
         <Routes>
-          <Route path="/" element={
-            <PrivateRoute>
-              <ChatPage />
-            </PrivateRoute>}
+          <Route
+            path="/"
+            element={
+              (
+                <PrivateRoute>
+                  <ChatPage />
+                </PrivateRoute>
+              )
+            }
           />
-          <Route path="login" element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>}
+          <Route
+            path="login"
+            element={
+              (
+                <PublicRoute>
+                  <LoginPage />
+                </PublicRoute>
+              )
+            }
           />
-          <Route path="signup" element={
-            <PublicRoute>
-              <SignupPage />
-            </PublicRoute>} 
+          <Route
+            path="signup"
+            element={
+              (
+                <PublicRoute>
+                  <SignupPage />
+                </PublicRoute>
+              )
+            }
           />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

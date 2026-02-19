@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Button, Card, Col, Form, Row, Container } from 'react-bootstrap'
+import { Button, Card, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -48,7 +48,7 @@ const LoginForm = () => {
     <FormBaseCard>
       <Card.Body className="row p-5">
         <h1 className="text-center mb-4">{t('login')}</h1>
-        <Form className='col-12 mt-3 mt-md-0' onSubmit={formik.handleSubmit}>
+        <Form className="col-12 mt-3 mt-md-0" onSubmit={formik.handleSubmit}>
           <fieldset>
             <Form.Group className="form-floating mb-3">
               <Form.Control
@@ -92,9 +92,11 @@ const LoginForm = () => {
           </fieldset>
         </Form>
       </Card.Body>
-      <Card.Footer className='p-4'>
+      <Card.Footer className="p-4">
         <div className="text-center">
-          <span>{t('haveAccount')} </span>
+          <span>
+            {t('haveAccount')}
+          </span>
           <a href="/signup">{t('signupForm')}</a>
         </div>
       </Card.Footer>

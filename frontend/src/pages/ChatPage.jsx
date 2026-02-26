@@ -10,7 +10,6 @@ import getModal from '../components/modals/index.js'
 import ChannelsList from '../components/ChannelsList'
 import MessagesList from '../components/MessagesList'
 import MessagesForm from '../components/MessagesForm'
-import useSocket from '../hooks/useSocket.js'
 
 const renderModal = ({ modalInfo, hideModal }) => {
   if (!modalInfo.type) {
@@ -21,7 +20,6 @@ const renderModal = ({ modalInfo, hideModal }) => {
 }
 
 const ChatPage = () => {
-  useSocket()
   const { data: channels, isLoading } = useGetChannelsQuery()
   const { data: messages } = useGetMessagesQuery()
   const { activeChannelId, modalInfo } = useSelector(state => state.ui)

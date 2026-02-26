@@ -1,42 +1,33 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
-import { Button, Container, Navbar } from 'react-bootstrap'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { ToastContainer } from 'react-toastify'
 
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SignupPage from './pages/SignupPage'
+import NavbarComponent from './components/Navbar.jsx'
 import SpinnerComponent from './components/Spinner.jsx'
-import { logOut, authInit } from './slices/authSlice.js'
+import { authInit } from './slices/authSlice.js'
+import routes from './routes.js'
 
 const PrivateRoute = ({ children }) => {
-  const { loggedIn, loading } = useSelector(state => state.auth)
+  const { token } = useSelector(state => state.auth)
   const location = useLocation()
 
-  if (loading) {
-    return <SpinnerComponent />
-  }
-
-  return loggedIn ? children : <Navigate to="/login" state={{ from: location }} />
+  return token ? children : <Navigate to={routes.loginPath()} state={{ from: location }} />
 }
 
 const PublicRoute = ({ children }) => {
-  const { loggedIn, loading } = useSelector(state => state.auth)
+  const { token } = useSelector(state => state.auth)
 
-  if (loading) {
-    return <SpinnerComponent />
-  }
-
-  return loggedIn ? <Navigate to="/" /> : children
+  return token ? <Navigate to={routes.mainPath()} /> : children
 }
 
 function App() {
   const dispatch = useDispatch()
-  const { loggedIn, loading } = useSelector(state => state.auth)
-  const { t } = useTranslation()
+  const { loading } = useSelector(state => state.auth)
 
   useEffect(() => {
     dispatch(authInit())
@@ -49,16 +40,10 @@ function App() {
   return (
     <div className="d-flex flex-column h-100">
       <BrowserRouter>
-        <Navbar bg="light" variant="light" expand="lg" className="shadow-sm">
-          <Container>
-            <Navbar.Brand as={Link} to="/">Hexlet Chat</Navbar.Brand>
-            {loggedIn
-              && <Button variant="primary" onClick={() => dispatch(logOut())}>{t('logout')}</Button>}
-          </Container>
-        </Navbar>
+        <NavbarComponent />
         <Routes>
           <Route
-            path="/"
+            path={routes.mainPath()}
             element={
               (
                 <PrivateRoute>
@@ -68,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="login"
+            path={routes.loginPath()}
             element={
               (
                 <PublicRoute>
@@ -78,7 +63,7 @@ function App() {
             }
           />
           <Route
-            path="signup"
+            path={routes.signUpPath()}
             element={
               (
                 <PublicRoute>

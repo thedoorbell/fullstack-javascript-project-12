@@ -34,7 +34,6 @@ const AddChannelModal = ({ onHide }) => {
         onHide()
       }
       catch (error) {
-        formik.setSubmitting(false)
         toast.error(t('errors.networkError'))
         console.log(error)
       }

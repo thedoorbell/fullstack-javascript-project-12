@@ -1,18 +1,20 @@
 import i18next from 'i18next'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
 import { Provider, ErrorBoundary } from '@rollbar/react'
+import { Provider as ReduxProvider } from 'react-redux'
 import filter from 'leo-profanity'
 import * as yup from 'yup'
 
 import App from './App'
 import resources from './locales/index.js'
+import store from './slices/index.js'
 import rollbarConfig from '../rollbar.config.js'
-import { createSocket } from './services/socketConfig'
-import { SocketContext } from './contexts/SocketContext'
+import { createSocketHandlers } from './services/socketEventsHandlers.js'
 
-const init = async (token) => {
+const init = async (socket) => {
   const i18n = i18next.createInstance()
-  const socket = createSocket(token)
+  const handlers = createSocketHandlers()
+
   filter.loadDictionary('ru')
   filter.add(filter.getDictionary('en'))
 
@@ -25,6 +27,7 @@ const init = async (token) => {
         escapeValue: false,
       },
     })
+
   yup.setLocale({
     mixed: {
       required: i18n.t('errors.required'),
@@ -37,16 +40,21 @@ const init = async (token) => {
     },
   })
 
+  socket.on('newMessage', handlers.handleNewMessage)
+  socket.on('newChannel', handlers.handleNewChannel)
+  socket.on('removeChannel', handlers.handleRemoveChannel)
+  socket.on('renameChannel', handlers.handleRenameChannel)
+
   return (
-    <Provider config={rollbarConfig}>
-      <ErrorBoundary>
-        <I18nextProvider i18n={i18n}>
-          <SocketContext.Provider value={socket}>
+    <ReduxProvider store={store}>
+      <Provider config={rollbarConfig}>
+        <ErrorBoundary>
+          <I18nextProvider i18n={i18n}>
             <App />
-          </SocketContext.Provider>
-        </I18nextProvider>
-      </ErrorBoundary>
-    </Provider>
+          </I18nextProvider>
+        </ErrorBoundary>
+      </Provider>
+    </ReduxProvider>
   )
 }
 

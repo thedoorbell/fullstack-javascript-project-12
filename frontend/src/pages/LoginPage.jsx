@@ -1,21 +1,19 @@
 import { useEffect, useRef } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
 
-import { setCredentials } from '../slices/authSlice.js'
 import { useLogInMutation } from '../services/authApi.js'
 import FormBaseCard from '../components/FormBaseCard.jsx'
+import useAuth from '../hooks/useAuth.js'
+import routes from '../routes.js'
 
 const LoginForm = () => {
   const [logIn, { isError }] = useLogInMutation()
   const inputRef = useRef()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { t } = useTranslation()
+  const { loginAndRedirect } = useAuth()
 
   useEffect(() => {
     inputRef.current.focus()
@@ -29,11 +27,9 @@ const LoginForm = () => {
     onSubmit: async (values) => {
       try {
         const data = await logIn(values).unwrap()
-        dispatch(setCredentials(data))
-        navigate('/', { replace: true })
+        loginAndRedirect(data)
       }
       catch (error) {
-        formik.setSubmitting(false)
         inputRef.current.select()
         console.log(error)
         if (error.status === 401) {
@@ -97,7 +93,7 @@ const LoginForm = () => {
           <span>
             {t('haveAccount')}
           </span>
-          <a href="/signup">{t('signupForm')}</a>
+          <a href={routes.signUpPath()}>{t('signupForm')}</a>
         </div>
       </Card.Footer>
     </FormBaseCard>

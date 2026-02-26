@@ -24,7 +24,7 @@ const MessagesList = ({ channels, messages, messagesEndRef }) => {
           <div className="text-break mb-2" key={message.id}>
             <b>{message.username}</b>
             :
-            {filter.clean(message.body)}
+            {` ${filter.clean(message.body)}`}
           </div>
         ))}
         <div ref={messagesEndRef} />

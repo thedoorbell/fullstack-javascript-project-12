@@ -1,22 +1,19 @@
 import { useEffect, useRef } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
 
-import { setCredentials } from '../slices/authSlice.js'
 import { useSignUpMutation } from '../services/authApi.js'
 import { getSingupSchema } from '../utilities/validationSchemas.js'
 import FormBaseCard from '../components/FormBaseCard.jsx'
+import useAuth from '../hooks/useAuth.js'
 
 const SignupPage = () => {
   const [signUp] = useSignUpMutation()
   const inputRef = useRef()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { t } = useTranslation()
+  const { loginAndRedirect } = useAuth()
   const validationSchema = getSingupSchema(t)
 
   useEffect(() => {
@@ -34,11 +31,9 @@ const SignupPage = () => {
       try {
         const { username, password } = values
         const data = await signUp({ username, password }).unwrap()
-        dispatch(setCredentials(data))
-        navigate('/', { replace: true })
+        loginAndRedirect(data)
       }
       catch (error) {
-        formik.setSubmitting(false)
         inputRef.current.select()
         console.log(error)
         if (error.status === 409) {

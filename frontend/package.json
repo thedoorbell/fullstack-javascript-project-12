@@ -11,10 +11,8 @@
     "start": "npx start-server -s ./dist"
   },
   "dependencies": {
-    "@eslint/compat": "^2.0.2",
     "@reduxjs/toolkit": "^2.11.2",
     "@rollbar/react": "^1.0.0",
-    "@stylistic/eslint-plugin": "^5.9.0",
     "axios": "^1.13.4",
     "bootstrap": "^5.3.8",
     "formik": "^2.4.9",
@@ -38,8 +36,10 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "eslint": "^9.39.2",
+    "@eslint/compat": "^2.0.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "@stylistic/eslint-plugin": "^5.9.0",
     "globals": "^16.5.0",
     "sass": "^1.97.3",
     "vite": "^7.2.4"

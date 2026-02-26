@@ -1,13 +1,9 @@
-import { Button, Col, Nav, ButtonGroup, Dropdown } from 'react-bootstrap'
+import { Button, Col, Nav } from 'react-bootstrap'
 import { PlusSquare } from 'react-bootstrap-icons'
-import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import filter from 'leo-profanity'
-import { setActiveChannelId } from '../slices/uiSlice'
+import ChannelItem from './ChannelItem'
 
 const ChannelsList = ({ channels, showModal }) => {
-  const { activeChannelId } = useSelector(state => state.ui)
-  const dispatch = useDispatch()
   const { t } = useTranslation()
 
   return (
@@ -29,46 +25,7 @@ const ChannelsList = ({ channels, showModal }) => {
         className="flex-column px-2 mb-3 overflow-auto h-100 d-block"
       >
         {channels?.map(channel => (
-          <Nav.Item as="li" key={channel.id} className="w-100">
-            {channel.removable === false
-              ? (
-                  <Button
-                    className="w-100 rounded-0 text-start"
-                    variant={activeChannelId === channel.id ? 'secondary' : ''}
-                    onClick={() => dispatch(setActiveChannelId(channel.id))}
-                  >
-                    <span className="me-1">#</span>
-                    {filter.clean(channel.name)}
-                  </Button>
-                )
-              : (
-                  <Dropdown as={ButtonGroup} className="d-flex">
-                    <Button
-                      className="w-100 rounded-0 text-start text-truncate"
-                      variant={activeChannelId === channel.id ? 'secondary' : ''}
-                      onClick={() => dispatch(setActiveChannelId(channel.id))}
-                    >
-                      <span className="me-1">#</span>
-                      {filter.clean(channel.name)}
-                    </Button>
-                    <Dropdown.Toggle
-                      split
-                      variant={activeChannelId === channel.id ? 'secondary' : ''}
-                      className="flex-grow-0"
-                    >
-                      <span className="visually-hidden">{t('editChannel')}</span>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => showModal('removing', channel.id)}>
-                        {t('remove')}
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => showModal('renaming', channel)}>
-                        {t('rename')}
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                )}
-          </Nav.Item>
+          <ChannelItem key={channel.id} channel={channel} showModal={showModal} />
         ))}
       </Nav>
     </Col>

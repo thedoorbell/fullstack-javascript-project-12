@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client'
+import routes from '../routes'
 
 export const createSocket = (token) => {
-  return io('/', {
+  return io(routes.mainPath(), {
     path: '/socket.io',
     transports: ['websocket', 'polling'],
     reconnection: true,

@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import getBaseQuery from './getBaseQuery'
+import routes from '../routes'
 
 const baseQuery = getBaseQuery()
 
@@ -9,14 +10,14 @@ export const authApi = createApi({
   endpoints: builder => ({
     logIn: builder.mutation({
       query: user => ({
-        url: '/login',
+        url: routes.loginPath(),
         method: 'POST',
         body: user,
       }),
     }),
     signUp: builder.mutation({
       query: user => ({
-        url: '/signup',
+        url: routes.signUpPath(),
         method: 'POST',
         body: user,
       }),

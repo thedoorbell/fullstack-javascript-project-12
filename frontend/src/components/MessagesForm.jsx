@@ -9,24 +9,19 @@ import { useAddNewMessageMutation } from '../services/messagesApi'
 
 const MessagesForm = ({ inputRef }) => {
   const { username } = useSelector(state => state.auth)
-  const { activeChannelId } = useSelector(state => state.ui)
+  const { activeChannelId: channelId } = useSelector(state => state.ui)
   const [addNewMessage] = useAddNewMessageMutation()
   const { t } = useTranslation()
 
   const formik = useFormik({
-    initialValues: {
-      body: '',
-      channelId: '',
-      username,
-    },
+    initialValues: { body: '' },
     onSubmit: async (values) => {
       try {
-        values.channelId = activeChannelId
-        await addNewMessage(values).unwrap()
+        const body = values.body
+        await addNewMessage({ body, channelId, username }).unwrap()
         formik.resetForm()
       }
       catch (error) {
-        formik.setSubmitting(false)
         toast.error(t('errors.networkError'))
         console.log(error)
       }
@@ -37,7 +32,7 @@ const MessagesForm = ({ inputRef }) => {
     if (!formik.isSubmitting && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [inputRef, activeChannelId, formik.isSubmitting])
+  }, [inputRef, channelId, formik.isSubmitting])
 
   return (
     <div className="mt-auto px-5 py-3">

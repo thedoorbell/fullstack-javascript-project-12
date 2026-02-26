@@ -18,7 +18,7 @@ export default {
     password: 'Пароль',
     confirmPassword: 'Подтвердите пароль',
     nickname: 'Ваш ник',
-    haveAccount: 'Нет аккаунта?',
+    haveAccount: 'Нет аккаунта? ',
     channels: 'Каналы',
     editChannel: 'Управление каналом',
     addChannel: 'Добавить канал',

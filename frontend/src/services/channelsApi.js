@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import getBaseQuery from './getBaseQuery'
+import routes from '../routes'
 
 const baseQuery = getBaseQuery()
 
@@ -10,13 +11,13 @@ export const channelsApi = createApi({
   endpoints: builder => ({
     getChannels: builder.query({
       query: () => ({
-        url: '/channels',
+        url: routes.channelsPath(),
       }),
       providesTags: ['Channels'],
     }),
     addNewChannel: builder.mutation({
       query: channel => ({
-        url: '/channels',
+        url: routes.channelsPath(),
         method: 'POST',
         body: channel,
       }),
@@ -24,14 +25,14 @@ export const channelsApi = createApi({
     }),
     removeChannel: builder.mutation({
       query: id => ({
-        url: `/channels/${id}`,
+        url: `${routes.channelsPath()}/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Channels'],
     }),
     renameChannel: builder.mutation({
       query: ({ id, name }) => ({
-        url: `/channels/${id}`,
+        url: `${routes.channelsPath()}/${id}`,
         method: 'PATCH',
         body: { name },
       }),

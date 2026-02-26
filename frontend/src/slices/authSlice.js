@@ -5,7 +5,6 @@ const authSlice = createSlice({
   initialState: {
     token: null,
     username: null,
-    loggedIn: false,
     loading: true,
   },
   reducers: {
@@ -13,7 +12,6 @@ const authSlice = createSlice({
       const { token, username } = action.payload
       state.token = token
       state.username = username
-      state.loggedIn = true
       state.loading = false
       localStorage.setItem('token', token)
       localStorage.setItem('username', JSON.stringify(username))
@@ -21,7 +19,6 @@ const authSlice = createSlice({
     logOut: (state) => {
       state.token = null
       state.username = null
-      state.loggedIn = false
       state.loading = false
       localStorage.removeItem('token')
       localStorage.removeItem('username')
